@@ -1,6 +1,7 @@
 var express = require('express')
   	,cookieParser = require('cookie-parser')
-  	,session = require('express-session');
+  	,session = require('express-session')
+  	,routes = require('./routes/routehandler');
 
 var app = express();
 app.set('views', __dirname + '/views');
@@ -9,9 +10,7 @@ app.use(cookieParser('secret'));
 app.use(session());
 app.use(express.static(__dirname + '/public'));
 
-app.get('/', function(req, res) {
-	res.render('index', {peerid: 'durqa'});
-});
+app.get('/', routes.index);
 
 var port = 8080;
 app.listen(port, function() {

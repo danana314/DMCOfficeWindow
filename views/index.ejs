@@ -132,6 +132,15 @@
             <input type="text" placeholder="Call user id..." id="callto-id">
             <a href="#" class="pure-button pure-button-success" id="make-call">Call</a>
           </div>
+
+          <!-- List of offices -->
+          <ul>
+            <% for(var i=0; i<offices.length; i++) { %>
+              <li>
+                <%= offices[i] %>
+              </li>
+            <% } %>
+          </ul>
         </div>
 
         <!-- Call in progress -->
@@ -141,7 +150,6 @@
         </div>
       </div>
   </div>
-
 
 </body>
 </html>
