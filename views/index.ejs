@@ -3,105 +3,21 @@
   <head>
     <title>DMC Office Window</title>
 
+    <script>
+      // Get data from server
+      var _officeId = '<%- officeid %>';
+      var _offices = [];
+      <% for(var i=0; i<offices.length; i++) { %>
+        _offices.push({officeName: '<%- offices[i] %>', present: false});
+      <% } %>
+    </script>
+
     <link rel="stylesheet" href="./bootstrap/css/bootstrap.css">
     <link rel="stylesheet" href="./stylesheets/dashboard.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="./bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="./bower_components/knockout/dist/knockout.js"></script>
     <script type="text/javascript" src="http://cdn.peerjs.com/0.3/peer.js"></script>
-
-    <script>
-      // Compatibility shim
-      navigator.getUserMedia = navigator.getUserMedia
-                            || navigator.webkitGetUserMedia
-                            || navigator.mozGetUserMedia;
-
-      // PeerJS object
-      //aqu2ngp60qr7wrk9
-      var peer = new Peer('<%- peerid %>' , { key: 'lwjd5qra8257b9', debug: 3, 
-        config: {'iceServers': [
-        { url: 'stun:stun.l.google.com:19302' } // Pass in optional STUN and TURN server for maximum network compatibility
-      ]}});
-
-      peer.on('open', function(){
-        $('#my-id').text(peer.id);
-      });
-
-      // Receiving a call
-      peer.on('call', function(call){
-        // Answer the call automatically
-        call.answer(window.localStream);
-        state_call_in_progress(call);
-      });
-      peer.on('error', function(err){
-        alert(err.message);
-        // Return to idle state if error occurs
-        state_idle();
-      });
-
-      // Click handlers setup
-      $(function(){
-
-        // Start call
-        $('#make-call').click(function(){
-          var call = peer.call($('#callto-id').val(), window.localStream);
-          state_call_in_progress(call);
-        });
-
-        // End call
-        $('#end-call').click(function(){
-          window.existingCall.close();
-          state_idle();
-        });
-
-        // Retry if getUserMedia fails
-        $('#state_setup-retry').click(function(){
-          $('#state_setup-error').hide();
-          state_setup();
-        });
-
-        // Get things started
-        state_setup();
-      });
-
-      function state_setup () {
-        $('#state_idle, #state_call_in_progress').hide();
-        $('#state_setup').show();
-        $('#state_setup-error').hide();
-
-        // Get audio/video stream
-        navigator.getUserMedia({audio: true, video: true}, function(stream){
-          // Set your video displays
-          $('#my-video').prop('src', URL.createObjectURL(stream));
-
-          window.localStream = stream;
-          state_idle();
-        }, function(){ $('#state_setup-error').show(); });
-      }
-
-      function state_idle () {
-        $('#state_setup, #state_call_in_progress').hide();
-        $('#state_idle').show();
-      }
-
-      function state_call_in_progress (call) {
-        // Hang up on an existing call if present
-        if (window.existingCall) {
-          window.existingCall.close();
-        }
-
-        // Wait for stream on the call, then set peer video display
-        call.on('stream', function(stream){
-          $('#their-video').prop('src', URL.createObjectURL(stream));
-        });
-
-        // UI stuff
-        window.existingCall = call;
-        $('#their-id').text(call.peer);
-        call.on('close', state_idle);
-        $('#state_setup, #state_idle').hide();
-        $('#state_call_in_progress').show();
-      }
-    </script>
 
   </head>
 
@@ -135,15 +51,10 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-md-1 sidebar">
-          <ul class="nav nav-sidebar">
-            <li class="active"><a href="#">Overview</a></li>
-
-            <!-- List of offices -->
-            <% for(var i=0; i<offices.length; i++) { %>
-              <li>
-                <a href="#"><%= offices[i] %></a>
+          <ul class="nav nav-sidebar" data-bind="foreach: offices">
+              <li data-bind="css: {active: $data.isPresent}">
+                <a href="#" data-bind="text: $data.officeName"></a>
               </li>
-            <% } %>
           </ul>
         </div>
 
@@ -173,6 +84,7 @@
               <p>Your id: <span id="my-id">...</span></p>
               <p>Share this id with others so they can call you.</p>
               <h3>Make a call</h3>
+              <button type="submit" data-bind="click: changePresence">Presence</button>
               <div class="form-group">
                 <input type="text" placeholder="Call user id..." id="callto-id">
                 <a href="#" class="btn btn-success" id="make-call">Call</a>
@@ -193,7 +105,8 @@
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-    <script src="./bootstrap/js/bootstrap.min.js"></script>-->
+    <script src="./bootstrap/js/bootstrap.min.js"></script>-->    
+    <script type="text/javascript" src="./javascripts/dmcofficewindow.js"> </script>
   </body>
 </html>
 
