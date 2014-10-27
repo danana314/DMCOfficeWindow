@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="./bootstrap/css/bootstrap.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="./bootstrap/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="./bower_components/knockout/dist/knockout.js"></script>
+    <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/knockout/knockout-3.1.0.js"></script>
 
     <style type="text/css">
       body {
@@ -51,23 +51,36 @@
       }
       console.log(loc);
       
-      /*
-      function trytolog() {
-        $.ajax({
-          url: '/trytolog',
-          type: 'POST',
-          contentType: "application/json",
-          async: true,
-          data: JSON.stringify({username: $("#username").val(), roomnumber: $("#roomnumber").val()}),
-          success: function (data) {
-            if (data.authed) {
-              window.location = "./";
-            } else {
-              $(".authfailure").show();
-            }
+      // Office picked (on document ready)
+      $(function() {
+        $("#office_picker_form").on('submit', function(e) {
+          // Prevent submit 
+          e.preventDefault();
+
+          var $btn = $(document.activeElement);
+
+          if (  $btn.length && 
+                $("#office_picker_form").has($btn) && 
+                $btn.is('button[type="submit"]') && 
+                $btn.is('[data-officeid]')) {
+
+            console.log($btn.attr("data-officeid"));
+
+            $.ajax({
+              url: '/checkin',
+              type: 'POST',
+              contentType: "application/json",
+              async: true,
+              data: JSON.stringify({officeid: $btn.attr("data-officeid")}),
+              success: function(data) {
+                if (data.authed) {
+                  window.location = "./main";
+                }
+              }
+            });
           }
         });
-      }*/
+      })
     </script>
   </head>
 
@@ -75,7 +88,7 @@
 
     <div class="container">
 
-      <form class="form-signin" onSubmit="trytolog(); return false;">       
+      <form id="office_picker_form" class="form-signin">       
 
         <div style="text-align: center;">
           <h2 class="form-signin-heading">Pick your office</h2>

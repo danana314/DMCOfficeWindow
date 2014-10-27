@@ -1,7 +1,8 @@
 (function(exports){
 
-  function Office(office, isPresent) {
-    this.officeName = ko.observable(office.name);
+  function Office(id, name, isPresent) {
+    this.name = ko.observable(name);
+    this.id = ko.observable(id);
     this.isPresent = ko.observable(isPresent);
   }
 
@@ -9,12 +10,12 @@
   var OfficesViewModel = function() {
     this.offices = ko.observableArray();
     for (var i = 0; i < _offices.length; i++) {
-      this.offices.push(new Office(_offices[i].office.name, _offices[i].present));
+      this.offices.push(new Office(_offices[i].id, _offices[i].name, _offices[i].present));
     };
 
     this.changePresence = function() {
       var firstoffice = ko.utils.arrayFirst(this.offices(), function(currentOffice) {
-        return currentOffice.officeName() == "Chicago";
+        return currentOffice.id() == _officeId;
       });
       if (firstoffice) {firstoffice.isPresent(!firstoffice.isPresent());}
     };
