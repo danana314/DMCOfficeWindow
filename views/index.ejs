@@ -8,7 +8,7 @@
       var _officeId = '<%- officeid %>';
       var _offices = [];
       <% for(var i=0; i<offices.length; i++) { %>
-        _offices.push({officeName: '<%- offices[i] %>', present: false});
+        _offices.push({office: '<%- offices[i] %>', present: false});
       <% } %>
     </script>
 
@@ -52,9 +52,9 @@
       <div class="row">
         <div class="col-md-1 sidebar">
           <ul class="nav nav-sidebar" data-bind="foreach: offices">
-              <li data-bind="css: {active: $data.isPresent}">
-                <a href="#" data-bind="text: $data.officeName"></a>
-              </li>
+            <li data-bind="css: {active: $data.isPresent}">
+              <a href="#" data-bind="text: $data.office.name"></a>
+            </li>
           </ul>
         </div>
 

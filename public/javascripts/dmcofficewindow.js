@@ -1,7 +1,7 @@
 (function(exports){
 
-  function Office(officeName, isPresent) {
-    this.officeName = ko.observable(officeName);
+  function Office(office, isPresent) {
+    this.officeName = ko.observable(office.name);
     this.isPresent = ko.observable(isPresent);
   }
 
@@ -9,7 +9,7 @@
   var OfficesViewModel = function() {
     this.offices = ko.observableArray();
     for (var i = 0; i < _offices.length; i++) {
-      this.offices.push(new Office(_offices[i].officeName, _offices[i].present));
+      this.offices.push(new Office(_offices[i].office.name, _offices[i].present));
     };
 
     this.changePresence = function() {
