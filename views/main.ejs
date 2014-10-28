@@ -4,7 +4,7 @@
     <title>DMC Office Window</title>
 
     <link rel="stylesheet" href="./bootstrap/css/bootstrap.css">
-    <link rel="stylesheet" href="./stylesheets/dashboard.css">
+    <link rel="stylesheet" href="./stylesheets/officewindow.css">
     
     <script>
       // Get data from server
@@ -57,37 +57,15 @@
         <div class="col-md-10 col-md-offset-1 main">
           <!-- Videos -->
           <div class="row">
-            <div class="col-md-6">
+<!--             <video id="their-video" autoplay></video>
+            <video id="my-video" muted="true" autoplay></video> -->
+            <div class="col-md-8">
               <video id="their-video" autoplay></video>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-2">
               <video id="my-video" muted="true" autoplay></video>
             </div>
           </div>
-
-            <!-- Get local audio/video stream -->
-            <div id="state_setup">
-              <p>Please click 'Allow' at the top of the screen to allow access to webcam and microphone</p>
-              <div id="state_setup-error">
-                <p>Failed to access the webcam and microphone. Please check permissions.</p>
-                <a href="#" class="btn btn-danger" id="state_setup-retry">Try again</a>
-              </div>
-            </div>
-
-            <!-- Make calls to others -->
-            <div id="state_idle">
-              <button type="submit" data-bind="click: changePresence1">Presence</button>
-              <div class="form-group">
-                <input type="text" placeholder="Call user id..." id="callto-id">
-                <a href="#" class="btn btn-success" id="make-call">Call</a>
-              </div>
-            </div>
-
-            <!-- Call in progress -->
-            <div id="state_call_in_progress">
-              <p>Currently in call with <span id="their-id">...</span></p>
-              <p><a href="#" class="btn btn-danger" id="end-call">End call</a></p>
-            </div>
         </div>
 
       </div>
@@ -98,11 +76,11 @@
     <!-- Placed at the end of the document so the pages load faster
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="./bootstrap/js/bootstrap.min.js"></script>-->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-    <script src="./bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script type="text/javascript" src="./bootstrap/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/knockout/knockout-3.1.0.debug.js"></script>
     <script type="text/javascript" src="http://cdn.peerjs.com/0.3/peer.js"></script>
-    <script type="text/javascript" src="./javascripts/dmcofficewindow.js"> </script>
+    <script type="text/javascript" src="./javascripts/main.js"> </script>
 
   </body>
 </html>
