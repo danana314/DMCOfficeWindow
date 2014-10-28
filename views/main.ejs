@@ -3,6 +3,9 @@
   <head>
     <title>DMC Office Window</title>
 
+    <link rel="stylesheet" href="./bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="./stylesheets/dashboard.css">
+    
     <script>
       // Get data from server
       var _officeId = '<%- officeid %>';
@@ -11,11 +14,6 @@
         _offices.push({id: '<%- offices[i].id %>', name: '<%- offices[i].name %>', present: false});
       <% } %>
     </script>
-
-    <link rel="stylesheet" href="./bootstrap/css/bootstrap.css">
-    <link rel="stylesheet" href="./stylesheets/dashboard.css">
-    
-
   </head>
 
   <body>
@@ -50,7 +48,7 @@
         <div class="col-md-1 sidebar">
           <ul class="nav nav-sidebar" data-bind="foreach: offices">
             <li data-bind="css: {active: $data.isPresent}">
-              <a href="#" data-bind="text: $data.name"></a>
+              <a href="#" data-bind="text: $data.name, click: $parent.callOffice"></a>
             </li>
           </ul>
         </div>
@@ -78,7 +76,7 @@
 
             <!-- Make calls to others -->
             <div id="state_idle">
-              <button type="submit" data-bind="click: changePresence">Presence</button>
+              <button type="submit" data-bind="click: changePresence1">Presence</button>
               <div class="form-group">
                 <input type="text" placeholder="Call user id..." id="callto-id">
                 <a href="#" class="btn btn-success" id="make-call">Call</a>

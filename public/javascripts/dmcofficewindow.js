@@ -1,26 +1,48 @@
 (function(exports){
 
   function Office(id, name, isPresent) {
-    this.name = ko.observable(name);
-    this.id = ko.observable(id);
-    this.isPresent = ko.observable(isPresent);
+    var self = this;
+    self.name = ko.observable(name);
+    self.id = ko.observable(id);
+    self.isPresent = ko.observable(isPresent);
   }
 
   // Data model
   var OfficesViewModel = function() {
-    this.offices = ko.observableArray();
+    var self = this;
+
+    self.offices = ko.observableArray();
     for (var i = 0; i < _offices.length; i++) {
-      this.offices.push(new Office(_offices[i].id, _offices[i].name, _offices[i].present));
+      self.offices.push(new Office(_offices[i].id, _offices[i].name, _offices[i].present));
     };
 
-    this.changePresence = function() {
+    self.changePresenceById = function(officeId, presence) {
+      var firstoffice = ko.utils.arrayFirst(this.offices(), function(currentOffice) {
+        return currentOffice.id() == officeId;
+      });
+      if (firstoffice) {firstoffice.isPresent(presence);}
+    };
+
+    self.callOffice = function(office) {
+      var call = peer.call(office.id(), window.localStream);
+
+      // Wait for stream on the call, then set peer video display
+      call.on('stream', function(stream){
+        $('#their-video').prop('src', URL.createObjectURL(stream));
+      });
+
+      call.on('close', state_idle);
+    };
+
+    self.changePresence1 = function() {
       var firstoffice = ko.utils.arrayFirst(this.offices(), function(currentOffice) {
         return currentOffice.id() == _officeId;
       });
       if (firstoffice) {firstoffice.isPresent(!firstoffice.isPresent());}
     };
   };
-  ko.applyBindings(new OfficesViewModel());
+  var officesViewModel = new OfficesViewModel();
+  ko.applyBindings(officesViewModel);
 
   // Compatibility shim
   navigator.getUserMedia = navigator.getUserMedia
@@ -35,7 +57,7 @@
   ]}});
 
   peer.on('open', function(){
-    $('#my-id').text(peer.id);
+    officesViewModel.changePresenceById(peer.id, true);
   });
 
   // Receiving a call
