@@ -11,7 +11,7 @@
     self.id = ko.observable(id);
     self.isPresent = ko.observable(isPresent);
     self.isConnected = ko.observable(false);
-    self.local
+    self.localself
   }
 
   // Data model
@@ -35,7 +35,7 @@
 
       // Wait for stream on the call, then set peer video display
       call.on('stream', function(stream){
-        $('#their-video').prop('src', URL.createObjectURL(stream));
+        $('#remote-video').prop('src', URL.createObjectURL(stream));
       });
 
       call.on('close', state_idle);
@@ -77,7 +77,7 @@
     // Get audio/video stream
     navigator.getUserMedia({audio: true, video: true}, function(stream){
       // Set your video displays
-      $('#my-video').prop('src', URL.createObjectURL(stream));
+      $('#local-video').prop('src', URL.createObjectURL(stream));
       App.localStream = stream;
     }, function(){ alert('Cannot access camera/mic'); });
   });
@@ -86,12 +86,11 @@
   function state_call_in_progress (call) {
     // Wait for stream on the call, then set peer video display
     call.on('stream', function(stream){
-      $('#their-video').prop('src', URL.createObjectURL(stream));
+      $('#remote-video').prop('src', URL.createObjectURL(stream));
     });
 
     // UI stuff
     window.existingCall = call;
-    $('#their-id').text(call.peer);
     call.on('close', state_idle);
   }
 })(this);
