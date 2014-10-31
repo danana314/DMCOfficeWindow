@@ -79,6 +79,7 @@
       // Set your video displays
       $('#local-video').prop('src', URL.createObjectURL(stream));
       App.localStream = stream;
+      //$('#remote-video').prop('src', URL.createObjectURL(stream));
     }, function(){ alert('Cannot access camera/mic'); });
   });
 
