@@ -5,13 +5,22 @@
   App.offices = _offices;
   App.officeId = _officeId;
 
+  // Setup socket.io
+  var socket = io();
+  socket.on('connect', function() {
+    socket.on('OfficeJoin', function(office) {
+      console.log(office);
+      callOffice(office.officeId);
+    });
+  })
+
+
   function Office(id, name, isPresent) {
     var self = this;
     self.name = ko.observable(name);
     self.id = ko.observable(id);
     self.isPresent = ko.observable(isPresent);
     self.isConnected = ko.observable(false);
-    self.localself
   }
 
   // Data model
@@ -25,20 +34,14 @@
 
     self.changePresenceById = function(officeId, presence) {
       var firstoffice = ko.utils.arrayFirst(this.offices(), function(currentOffice) {
-        return currentOffice.id() == officeId;
+        //return currentOffice.id() == officeId; //match on numerical id
+        return currentOffice.name() == officeId;
       });
       if (firstoffice) {firstoffice.isPresent(presence);}
     };
 
     self.callOffice = function(office) {
-      var call = peer.call(office.id(), App.localStream);
-
-      // Wait for stream on the call, then set peer video display
-      call.on('stream', function(stream){
-        $('#remote-video').prop('src', URL.createObjectURL(stream));
-      });
-
-      call.on('close', state_idle);
+      callOffice(office.name());
     };
   };
   var officesViewModel = new OfficesViewModel();
@@ -50,8 +53,8 @@
                         || navigator.mozGetUserMedia;
 
   // PeerJS object
-  //aqu2ngp60qr7wrk9  // Personal API key; TODO: replace
-  var peer = new Peer(App.officeId , { key: 'lwjd5qra8257b9', debug: 3, 
+  //lwjd5qra8257b9  // Personal API key; TODO: replace
+  var peer = new Peer(App.officeId , { key: 'aqu2ngp60qr7wrk9', debug: 3, 
     config: {'iceServers': [
     { url: 'stun:stun.l.google.com:19302' } // Pass in optional STUN and TURN server for maximum network compatibility
   ]}});
@@ -64,7 +67,16 @@
   peer.on('call', function(call){
     // Answer the call automatically
     call.answer(App.localStream);
-    state_call_in_progress(call);
+
+    // Wait for stream on the call, then set peer video display
+    call.on('stream', function(stream){
+      $('#remote-video').prop('src', URL.createObjectURL(stream));
+      officesViewModel.changePresenceById(call.peer, true);
+    });
+
+    call.on('close', function() {
+      officesViewModel.changePresenceById(call.peer, false);
+    });
   });
   peer.on('error', function(err){
     alert(err.message);
@@ -79,19 +91,30 @@
       // Set your video displays
       $('#local-video').prop('src', URL.createObjectURL(stream));
       App.localStream = stream;
+
+      // Let other offices know you have joined
+      socket.emit('RegisterOffice', { officeId: App.officeId });
+
       //$('#remote-video').prop('src', URL.createObjectURL(stream));
     }, function(){ alert('Cannot access camera/mic'); });
   });
 
+  // Call office
+  function callOffice(officeId) {
+    var call = peer.call(officeId, App.localStream);
 
-  function state_call_in_progress (call) {
     // Wait for stream on the call, then set peer video display
     call.on('stream', function(stream){
       $('#remote-video').prop('src', URL.createObjectURL(stream));
+      officesViewModel.changePresenceById(officeId, true);
     });
 
-    // UI stuff
-    window.existingCall = call;
-    call.on('close', state_idle);
+    call.on('close', function() {
+      officesViewModel.changePresenceById(officeId, false);
+    });
+  }
+
+  function state_call_in_progress (call) {
+    
   }
 })(this);
