@@ -23,6 +23,11 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-md-1 sidebar">
+          <ul class="nav nav-sidebar">
+            <li>
+              <img src="img/dmclogo.png" alt="DMC Logo" width="100%"></img>
+            </li>
+          </ul>
           <ul class="nav nav-sidebar" data-bind="foreach: offices">
             <li data-bind="css: {active: $data.isPresent}">
               <a href="#" data-bind="text: $data.name, click: $parent.callOffice"></a>
